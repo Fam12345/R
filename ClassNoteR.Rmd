@@ -1,0 +1,74 @@
+---
+title: "ClassnoteR"
+output: pdf_document
+date: "2022-09-26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+install.packages('nycflights13')
+
+```
+
+
+```{r}
+library(nycflights13)
+```
+
+```{r}
+names(flights)
+```
+
+```{r}
+flights$month
+```
+```{r}
+unique(flights$month)
+```
+
+```{r}
+summary(flights$month)
+```
+
+```{r}
+typeof(flights$month)
+```
+
+Avarage flight time for months >7
+
+```{r}
+flights%>%
+  filter(month>7)%>%
+  group_by(carrier)%>%
+  summarise(mean_dep=mean(dep_delay,na.rm= TRUE)) # c
+            
+```
+```{r}
+filter(flights,month==1)
+```
+```{r}
+flights %>% 
+  filter(month==1 & origin== "JFK")
+```
+
+```{r}
+unique(flights$month)
+```
+
+
+```{r}
+flights %>% 
+  filter((month == 1 &  origin == "LGA") & (month == 12 & origin == "JFK"))
+
+```
+
+
+
+
+
+
+

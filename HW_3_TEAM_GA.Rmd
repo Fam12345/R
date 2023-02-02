@@ -1,0 +1,195 @@
+---
+title: "HW_3_Team_GA"
+output: pdf_document
+date: "2022-09-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, header= TRUE)
+```
+
+### Use the following libraries in order to write code and execute output. 
+ 
+ library(ggplot2) library(tidyverse) 
+
+Show and use R coding to answer the following questions. ( Use Tidyverse methods to 
+generate  graphs and plots)
+
+1) Explore the Midwest data frame.    
+
+```{r }
+library(tidyverse) 
+library(dplyr)
+library(ggplot2)
+data("midwest")
+```
+a) How many rows, columns, and variables are in the Midwest data frame? 
+
+```{r }
+glimpse(midwest)
+?midwest
+```
+Rows: 437
+Columns: 28
+
+
+b) Name three categorical variables in the data frame. 
+
+```{r }
+split(names(midwest),sapply(midwest, function(x) paste(class(x), collapse=" ")))
+```
+Categorical variable:
+1. "county": County name   
+2. "state": State to which county belongs to.
+3. "category": Miscellaneous 
+4. "inmetro": County considered in a metro area 
+
+
+c) Give a description for the variable percollege. 
+
+
+```{r }
+library(psych)
+describe(midwest$percollege)
+
+```
+percollege: Percent college educated.
+
+
+Use the Midwest data frame for problems 2,3,4,5,6,7, and 9
+
+
+### 2) Write R code to produce a histogram for the variable poptotal.
+
+
+```{r }
+library(ggplot2) 
+bw <- 2 * IQR(midwest$poptotal) / length(midwest$poptotal)^(1/3)  # Freedman–Diaconis rule
+ggplot(midwest, aes(x=poptotal))+
+  geom_histogram(binwidth= bw, bins = sqrt(437)) 
+# Based on the rule, 
+#it isn't much clear; if we set binwidth as such.
+```
+
+
+```{r }
+library(ggplot2) 
+library(tidyverse)
+ggplot(midwest, aes(x=poptotal))+
+  geom_histogram(bins = sqrt(437)) #Better look without the binwidth set.
+
+      
+```
+
+### 3) Write r code to produce a boxplot for the variable area, and then use your box plot to find Q1, Q2, and Q3 
+
+```{r}
+boxplot(midwest$area)
+```
+```{r}
+library(mosaic)
+favstats(midwest$area)
+```
+
+### 4) Write r code to produce side by side boxplots for the quantitative variable area with respect to the categorical variable state. 
+
+
+
+```{r}
+library(ggplot2)
+midwest$state <-factor(midwest$state) # converts state to a categorical variable
+my.area_state <<-ggplot(data=midwest, aes(y=area, x=state, fill=state ) ) # Creates boxplots
+my.area_state <- my.area_state + geom_boxplot()
+my.area_state
+```
+
+### 5) Write r code to produce a scatter plot for the variables popdensity and popwhite. Let popdensity be the independent variable x and popwhite be dependent variable y.
+
+```{r}
+plot_scatter <- ggplot(midwest) + geom_point(aes(y = popdensity , x = popwhite))
+plot_scatter
+```
+
+### 6) Write r code that will produce smooth lines plots and scatter plots on the same axis system for popwhite and popdensity with respect to the categorical variable state. 
+
+```{r}
+library(ggplot2)
+plot_scatter_smooth <- ggplot(midwest,aes(y = popdensity , x = popwhite, color = state)) + 
+  geom_point() +
+  geom_smooth(se = FALSE) #geom_smooth left to default which set ` using method = 'loess' and formula 'y ~ x'
+
+plot_scatter_smooth
+
+#Note: we are not asked to do lm here; just smoothing lines 
+```
+
+### 7) Again,  using the variables popdensity and popwhite, write r code that will produce the same basic scatter plot, but also make the following changes: 
+
+
+a) Your scatter plot should have purple data points. 
+
+```{r}
+plot_scatter <- ggplot(midwest, aes(y = popdensity , x = popwhite)) + 
+  geom_point(color= "purple")
+plot_scatter
+```
+
+b) The label of the dependent variable should be changed to Population  Density and the 
+label of the independent variable should be changed to White Population
+
+```{r}
+plot_scatter_level <- ggplot(midwest, aes(y = popdensity , x = popwhite)) + 
+  geom_point(color= "purple") +
+  xlab("White Population") +
+  ylab("Population Desnsity")
+plot_scatter_level
+```
+
+c) Add a linear regression line to your graph. 
+
+```{r}
+plot_scatter_level_smoothing <- ggplot(midwest, aes(y = popdensity , x = popwhite)) + 
+  geom_point(color= "purple") +
+  xlab("White Population") +
+  ylab("Population Desnsity") +
+  geom_smooth(se=FALSE, method = lm)
+plot_scatter_level_smoothing
+```
+d) Add the following title to your graph; White vs Density Scatter Plot 
+
+```{r }
+plot_scatter_level_smoothing <- ggplot(midwest, aes(y = popdensity , x = popwhite)) + 
+  geom_point(color= "purple") +
+  xlab("White Population") +
+  ylab("Population Desnsity") +
+  ggtitle("White vs Density Scatter Plot")+
+  geom_smooth(se=FALSE, method = lm)
+plot_scatter_level_smoothing
+```
+
+### 8) Write R code that will generate the following graph (use the mpg data frame) 
+
+```{r }
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+geom_smooth(se = TRUE)
+```
+
+### 9   Write R code that will produce the following facet plot using the midwest data frame
+
+```{r}
+ggplot(data = midwest, mapping = aes(x = inmetro, y = popdensity)) +
+  geom_point() +
+  facet_wrap( ~ state)
+```
+
+### 10   Write R code that will produce the following facet plot using the mpg data frame
+ggplot(data = mpg, aes(x=cty)) +
+  geom_histogram(position="identity", fill="green", alpha=1, bins = 30) +
+  facet_wrap( drv ~cyl )
+```{r}
+ggplot(data = mpg, aes(x=cty)) +
+  geom_histogram(fill="green", alpha=0.5) +
+  facet_grid(drv ~cyl)
+
+```
+Note: the Alpha  =0.5  and the bin set to the default is an estimation because its hard to know the density of the color and size of the bin from your graph.

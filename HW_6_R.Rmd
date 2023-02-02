@@ -1,0 +1,90 @@
+---
+title: "HW_6_R"
+author: "Group_GA"
+date: "2022-10-28"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The goal of tidyr is to help you create tidy data. Tidy data is data where:
+Every column is variable.
+Every row is an observation.
+Every cell is a single value.
+
+
+# Exercise 1
+Tidy the data frame ex0724 from the Sleuth3 package. You can read about this data frame by typing
+help(ex0724) after loading Sleuth3.
+
+```{r}
+
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+Sleuth3::ex0724
+```
+```{r}
+library(Sleuth3)
+data("ex0724") 
+library(magrittr)
+library(readr)
+
+```
+
+
+
+```{r}
+ex0724 %>%
+  tidyr::gather(Denmark:USA, key = "country", value = "proportion", na.rm = TRUE) -> clean_ex0724
+```
+
+```{r}
+clean_ex0724
+```
+
+# Exercise 2
+
+Load in and tidy the tb data frame: https://dcgerard.github.io/stat_412_612/data/tb.csv
+The column names specify both the sex (m = male, f = female) and age range (04 = 0 to 4, 514 = 5 to 14,
+014 = 0 to 14, 1524 = 15 to 24, 2534 = 25 to 34, 3544 = 35 to 44, 4554 = 45 to 54, 4464 = 55 to 64, 65 =>=65, u = unknown).
+
+The values in the cells are counts.Save the tidied data in the output folder.
+
+
+```{r}
+tb<-read_csv("https://dcgerard.github.io/stat_412_612/data/tb.csv") 
+tb
+```
+
+```{r}
+tb %>%
+  tidyr::gather(-iso2, -year, key = "sex_age", value = "counts", na.rm = TRUE) %>%
+  tidyr::separate(col = sex_age, into = c("sex", "age"), sep = 1) ->
+  tb2
+tb2
+```
+
+
+# Exercise 3
+
+Load in and tidy the wine data frame: https://dcgerard.github.io/stat_412_612/data/wine.csv
+Save the tidied data in the output folder.
+
+```{r}
+wine <- read_csv2("https://dcgerard.github.io/stat_412_612/data/wine.csv")
+wine
+```
+```{r}
+wine %>%
+  tidyr::gather(-measure, key = "country", value = "value") %>%
+  tidyr::spread(key = measure, value = value) ->
+  wine_clean
+wine_clean
+```
+

@@ -1,0 +1,76 @@
+---
+title: "Fam"
+output: pdf_document
+date: "2022-10-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+my_data<-read.csv(file = "./daf_financial.csv")
+colnames(my_data) <- c('year', 'total_revenue', 'sell_revenue', 'production_expense', 'admin_expense', 'Marketing_expense','profit_after_afta', 'profit_tax', 'other')
+final_data<-my_data[-c(1,2,3, 4,5, 6,7,8,9), ]
+rownames(final_data) = seq(length=nrow(final_data))
+final_data
+
+save(final_data,file="data.Rda")
+load('data.Rda')
+```
+```{r}
+library(tidyverse)
+library(dplyr)
+library(dplyr)
+
+final_data<-final_data[c('year', 'total_revenue', 'sell_revenue', 'production_expense', 'admin_expense', 'Marketing_expense','profit_after_afta', 'profit_tax', 'other')]
+
+final_data
+```
+```{r}
+sum(is.na(final_data))
+```
+
+
+```{r}
+# install.packages("ggplot2")
+library(ggplot2)
+view(final_data)
+```
+
+```{r}
+ggplot(data=final_data, aes(x= year, y=total_revenue))+
+xlab("Year") +
+ylab("total_revenue") +
+ggtitle("year vs total_revenue")+
+geom_point(color= "green") 
+
+
+```
+
+```{r}
+ggplot(data=final_data, aes(x=total_revenue)) +
+ggtitle("DRV Bar Graph")+
+geom_bar()
+```
+```{r}
+ggplot(data=final_data, aes(x=year, y= total_revenue))+
+xlab("year") +
+ylab("revenue ") +
+ggtitle("total vs year")+
+geom_point(color= "green") +
+#geom_smooth(se = FALSE, method = lm)
+geom_smooth()
+```
+```{r}
+ggplot(final_data, aes(x = year, y = total_revenue, color= "red")) + # Create stacked bar chart
+geom_bar(stat = "identity", position= "fill") +
+coord_polar("y", start=1)
+```
+

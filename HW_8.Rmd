@@ -1,0 +1,58 @@
+---
+title: "HW_8"
+author: "GA"
+date: "2022-11-11"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ Consider the data in the nycflights13 package.
+ 
+```{r}
+library(tidyverse)
+library(nycflights13)
+```
+ 
+# Exercise 1: Is there a relationship between the age of a plane and its delays?
+
+```{r}
+#rename variable year in planes to plane_year so it's distinct from year in flights
+planes1 <- planes %>%
+  select(tailnum:year) %>%
+  rename(plane_year = "year")
+head(planes1)
+```
+```{r}
+flights %>%
+  left_join(planes1, by = "tailnum") %>%       #left join flights and planes1
+  mutate(plane_age = year - plane_year) %>%    #create a new variable of plane_age 
+  filter(arr_delay > 0) %>%                    #filter out non-delay entries
+  group_by(plane_age) %>%
+  summarise(arr_delay_mean = mean(arr_delay)) %>%      #calculate the average arrival delay per plane_age
+  ggplot(mapping = aes(x = plane_age, y = arr_delay_mean)) +
+  geom_point() +
+  labs(x = "Airplane Age", y = "Average Arrival Delay in Minutes", title = "Airplane Age vs. Average Arrival Delay")
+```
+```{r}
+flights %>%
+  left_join(planes1, by = "tailnum") %>%       #left join flights and planes1
+  mutate(plane_age = year - plane_year) %>%    #create a new variable of plane_age 
+  filter(dep_delay > 0) %>%                    #filter out non-delay entries
+  group_by(plane_age) %>%
+  summarise(dep_delay_mean = mean(dep_delay)) %>%      #calculate the average departure delay per plane_age
+  ggplot(mapping = aes(x = plane_age, y = dep_delay_mean)) +
+  geom_point()+
+  labs(x = "Airplane Age", y = "Average Departure Delay in Minutes", title = "Airplane Age vs. Average Departure Delay")
+```
+Thus, there seems (both in arrival and departure delay) some kind of relation, but it is not strong.
+
+
+
+# Exercise 2: Find the 10 days of the year that have the highest median departure delay, then select all flights from those 10 days.
+```{r}
+filter(flights, min_rank(desc(dep_delay))<=10)
+flights %>% top_n(n = 10, wt = dep_delay)
+```

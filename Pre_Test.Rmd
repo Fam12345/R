@@ -1,0 +1,268 @@
+---
+title: "Pre_test_Team_GA"
+output: pdf_document
+date: "2022-10-06"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+      412/612  PRACTICE TEST
+    PART 1  GGPLOT PRACTICE  (Use tidyverse coding for all problems)
+    
+```{r}
+library(tidyverse)
+```
+
+# 1) Using the mpg data frame, create a scatter plot that shows a relationship between the variables displ and cty.  (displ =x and cty=y)
+
+```{r}
+#data(mpg)
+ggplot(data=mpg, aes(x=displ, y=cty))+
+geom_point()
+```
+
+
+# 2 Using the mpg data frame, create a scatter plot that shows a  relationship between the variables displ and cty.  (displ =x and cty=y),and also map colors of your scatter plot to the variable fl.
+
+```{r}
+ggplot(data=mpg, aes(x=displ, y=cty, color =fl))+
+geom_point()
+```
+
+
+# 3.  Using the mpg data frame, create a scatter plot that shows a relationship between the variables displ and cty.  (displ =x and cty=y), and also include code so that all of your scatter plot points are green.
+
+
+```{r}
+ggplot(data=mpg, aes(x=displ, y=cty))+
+geom_point(color= 'green')
+```
+
+
+# 4.  Using the mpg data frame, create a scatter plot that shows a relationship between the variables displ and cty.  (displ =x and cty=y), and also include code so that the scatter plot has different shapes or characters according to class.  Code so that your scatter plot has the title   City vs Highway , the y axis is labled City and the x axis is labeld  Highway.  (Check out the ggplot graphing example towards the end of chapter one in your book to get data points with different shapes)
+
+
+```{r}
+ggplot(data=mpg, aes(x=displ, y=cty, shape= class))+
+xlab("Highway") +
+ylab("City") +
+ggtitle("City vs Highway")+
+geom_point(color='green')
+```
+
+
+# 5.  Using the mpg data frame, create a smooth line fitted to the data  displ and cty.  (displ =x and cty=y).
+
+```{r}
+ggplot(data=mpg, aes(x=displ, y=cty))+
+xlab("Highway") +
+ylab("City") +
+ggtitle("City vs Highway")+
+geom_point(color='green') +
+geom_smooth(se = FALSE, method = lm)
+geom_smooth()
+```
+
+# 6.  Using the mpg data frame, create smooth lines over the scatter plot for the data  displ and cty.  (displ =x and cty=y) based on drv levels.
+
+```{r}
+ggplot(data=mpg, aes(x=displ, y=cty, color=drv))+
+xlab("Highway") +
+ylab("City") +
+ggtitle("City vs Highway")+
+geom_point(color= "green") +
+#geom_smooth(se = FALSE, method = lm)
+geom_smooth()
+```
+
+
+# 7. Using the mpg data frame, create a scatter plot that shows a relationship between the variables displ and cty.  (displ =x and cty=y), and also include code that produces overlayed regression lines based on drv levels.  The data points should also be color coded according to levels of drv.
+
+```{r}
+
+ggplot(data=mpg, aes(x=displ, y=cty, color=drv))+
+xlab("Highway") +
+ylab("City") +
+ggtitle("City vs Highway")+
+geom_point() +
+geom_smooth(se = FALSE, method = lm)
+geom_smooth()
+```
+
+# 8.  Using the mpg data frame, create a bar graph for the variable drv.  include code so that each bar has a different color. Title your bar graph DRV Bar Graph
+
+
+```{r}
+ggplot(data=mpg, aes(factor(drv), fill = factor(drv))) +
+ggtitle("DRV Bar Graph")+
+geom_bar()
+
+```
+
+
+# 9.  Using the mpg data frame, for the variable drv, create a bar graph that shows color stacked bars over the variable trans for the variable hwy
+
+```{r}
+ggplot(mpg, aes(x = drv, y = hwy, fill = trans)) +  # Create stacked bar chart
+  geom_bar(stat = "identity", position = 'fill')
+```
+
+
+# 10.  Using the stacked bar graph from number 10, create a pie chart.
+
+```{r}
+ggplot(mpg, aes(x = drv, y = hwy, fill = trans)) +  # Create stacked bar chart
+geom_bar(stat = "identity", position= "fill") +
+coord_polar("y", start=1)
+```
+
+
+# 11.  Use and show R code that will produce the following side by side box plots from the diamonds data frame.
+
+
+```{r}
+data("diamonds")
+ggplot(diamonds, aes(y= price, x= cut))+
+  geom_boxplot()
+         
+```
+
+
+```{r}
+diamonds
+```
+
+# 12. Use and show R code that will produce the following faceted display of boxplots from the diamonds data frame.
+
+```{r}
+ggplot(data = diamonds, aes(x=carat, y= price)) +
+geom_boxplot() +
+facet_grid(cut~color)
+
+```
+
+# 13. Use and show R code that will produce a histogram that is colored blue for the hwy variable from the mpg data frame.  Give the histogram the title  Blue Histogram.
+
+
+```{r}
+ggplot(mpg, aes(x=hwy))+
+  geom_histogram(fill = "blue")+
+  ggtitle("Blue Histogram")
+```
+
+PART II   DPLYR PRACTICE  (You may use the piping method or the 
+assignment method)
+
+# 1.  Using the DPLYR filter function and the mpg data frame, produce a data frame that only has output for a Dodge Durango 4wd.
+
+```{r}
+library(dplyr)
+
+Dodge_durango_4wd<- mpg %>% filter(manufacturer == "dodge" & model == "durango 4wd")
+
+Dodge_durango_4wd
+
+```
+
+
+# 2.  Using the DPLYR filter function and the mpg data frame, produce a data frame that only has output for vehicles whose city mileage is less than 10 miles per gallon and whose highway mileage is less than 16 miles per gallon.
+
+
+```{r}
+vhicle_milage_cityunder10_highwayunder16<- mpg %>% filter(cty < 10  & hwy<16)
+vhicle_milage_cityunder10_highwayunder16
+```
+
+# 3.  Using the DPLYR arrange function and the mpg data frame, produce a data frame that displays displ in descending order
+
+
+```{r}
+displ_desc<-mpg %>% arrange(displ) 
+
+head(data.frame(displ_desc$displ))
+```
+
+
+
+# 4.  Using the DPLYR arrange function and the mpg data frame, produce a data frame of 30 observations that display city miles per gallon in ascending order.  Which vehicle has the lowest city miles per gallon ?
+
+
+```{r}
+p<-mpg %>% select(model, cty)%>%
+  arrange(cty, desc= FALSE) # arrange city miles per gallon in ascending order
+
+head(p,30) # shows the first 30 rows 
+```
+```{r}
+head(p,1) #dodge with model	dakota pickup 4wd vehicle has the lowest city miles per gallon
+```
+
+#5. Using the DPLYR filter and select  functions and the mpg data frame, produce a data frame that displays all ford vehicles for 1999 whose city miles per gallon is less than 16 and whose highway miles per gallon is also less than 16.
+
+
+
+```{r}
+p_ford1999<-mpg %>% filter(year==1999 & manufacturer== "ford" & cty < 16 & hwy <16 )
+p_ford1999 #only one vhicles found 
+```
+
+#6. Using the DPLYR filter, select and mutate functions and  the mpg data frame, produce a data frame that displays the  difference between highway mileage and city mileage for the ford mustang.A partial data frame is given below;
+ manufacturer model     cty   hwy difference
+  <chr>        <chr>   <int> <int>      <int>
+1 ford         mustang    18    26          8
+2 ford         mustang    18    25          7
+3 ford         mustang    17    26          9
+
+```{r}
+p_ford_mustang<- mutate(mpg, difference= hwy-cty) %>%
+  filter(manufacturer=="ford" & model== "mustang") %>%
+  select(manufacturer, model, cty, hwy, difference)
+
+p_ford_mustang
+```
+
+
+#7.  Install the New York City flights data package;install.packages(“nycflights13”) Now code and execute the following library library(nycflights.13) And then code and call the following data frame
+flights
+
+```{r}
+library(nycflights13)
+flights
+```
+
+
+```{r}
+?flights
+```
+
+# Use the following commands to further explore the data frame flights
+```{r}
+names(flights)
+```
+
+# Use DPLYR functions and the piping operator to produce a data frame that shows arrival delay times in descending order for American Airlines  on March 17, 2013.  A partial table is given below.
+
+```{r}
+
+Americanairlines_172013_delay<-flights%>%
+  filter(carrier == "AA" & month == 3 & day == 17 & year == 2013) %>%
+  select(carrier, year, month, day, arr_delay)
+
+arrange(Americanairlines_172013_delay, desc(arr_delay))
+
+```
+
+#8. Using the mpg data frame ,  dplyr functions and the pipe operator, produce a data frame that displays the mean mpg for city driving for manufacturers in the year 1999 only in descending order. Which manufacturer got the best average gas mileage in 1999?
+
+```{r}
+p<-mpg %>% 
+  filter(year==1999) %>%
+  select(manufacturer, year, cty)%>%
+  group_by(manufacturer) %>% 
+  summarize(avg=mean(cty))%>%
+  arrange(desc(avg))
+p  # Jeep got low avarge gas mile.
+```
+

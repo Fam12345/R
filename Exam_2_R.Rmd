@@ -1,0 +1,178 @@
+---
+title: "EXAM_2_R"
+author: "Fentaw Abitew"
+date: "2022-11-18"
+output: pdf_document
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Instructions:Do not help or accept help from anyone as you work on and complete the exam.  You are at 
+liberty to use your book, past graded exams, or any online resource that you feel will be helpful. Send all r 
+code and associated output as an r markdown file and as a knitted word file document. 
+```{r}
+#install.packages("tidyverse")
+```
+```{r}
+#install.packages("reshape2")
+```
+
+
+```{r}
+library(tidyverse)  
+library(stringr)          
+library(dplyr) 
+library(ggplot2)  
+library(tidyr)              
+library(reshape2) 
+library(readr)   
+library(forcats) 
+```
+ 
+1.  Using the gss_cat data frame, write r code that will produce the bar graph below. And explain in one or 
+two sentences why the bar graph is difficult to interpret. 
+
+```{r}
+unclear_bar<- ggplot(gss_cat, aes(rincome)) +
+  geom_bar()
+unclear_bar
+```
+Here, we are unable to interpret the result for the obvious reason that we cannot see what the level of rincome are. The levels are overlapped and we cannot see what it is. 
+
+
+2. Now write r code from the same data set that produce the transformed bar graph and comment on why it 
+is an improvement 
+
+```{r}
+flip_bar<-unclear_bar + coord_flip()
+flip_bar
+```
+Here, it is better because we can see the levels of rincome clearly the coordinated filliped. 
+
+3. Use r code to produce the tips data frame from the reshape2 package.  Name three categorical variables in 
+the data frame.
+
+```{r}
+names(tips) # those are the seven variables (column names) and "sex", "smoker", "day" and, "time" are catagorical
+tip_dataframe_sample<-head(tips, 10)
+head(tip_dataframe_sample)
+```
+
+As we can see from the head data frame and obviously from the mark as fctr(factor): the categorical variables are sex, smoker, day, and time.
+
+```{r}
+#install.packages("describer")
+```
+
+
+```{r}
+#also we can run class for each variable or use description to see the catagorical variables 
+class(tips$day)
+
+describer::describe(tips) 
+```
+
+
+4. Use r code to indicate how many levels exist for the factor day in the tips data frame  and determine the 
+frequency of each level. 
+
+```{r}
+#One way of indicating  how many levels exist for the factor day in the tips data frame is using unique
+
+unique(tips$day) # The day has four unique values or levels (Fri, Sat, Sun, Thur)
+
+```
+
+```{r}
+library(plyr)
+count(tips$day) # each level of day with the freq
+```
+
+5. Produce r code that will produce the following histogram from the tips data frame 
+
+```{r}
+barlines<-"white"
+barfill <-"black"
+ggplot(data = tips, aes(x=total_bill)) +
+  geom_histogram(aes(y = ..count..), binwidth = 2,
+                       colour = barlines, fill = barfill)
+         
+
+```
+
+6. Write r code that will produce the following histograms from the tips data frame 
+
+
+```{r}
+barlines<-"white"
+ggplot(data = tips, aes(x=total_bill)) +
+ scale_y_continuous(name = "Count")+
+geom_histogram(aes(y = ..count..), binwidth = 2,
+                       colour = barlines, fill = barfill)  +
+facet_grid(sex ~smoker)
+```
+7. Using the stringr::words data set along with str_subset code,  produce R code that will show a 9 letter word that has the letter a in the middle.
+
+```{r}
+#stringr::words
+letter9_a<- str_subset(stringr::words, "....a....") # C-H-A-R-a-C-T-E-R
+letter9_a
+writeLines(letter9_a)
+```
+
+8. Produce a string that will force a match for the regular expression \\””\   Use and show the R code command writelines to confirm your answer 
+
+
+```{r}
+p<-  '\\””\ '
+writeLines(p)
+```
+`
+```{r}
+v<- 'abebe beso \\""\ bela '
+writeLines(v)
+```
+
+
+9. Describe in words (two or three sentences) what the following regular expression will match  ^.*e$ 
+
+```{r} 
+# ^ start 
+# $ end
+# . and * these characters have special meaning in regex
+
+### all in all,  ^.*$ will match any string. example,
+
+x= c("dog", "$1#23", "FENTAW")
+str_view(x, "^.*$")
+
+```
+
+10.Using the methods demonstrated in class regarding  Factors and Forcats,  use and show R code to create a 
+factor that will enable you to sort the string vector  (“eight”, “four”, “ten”, “two”) according to quantity, not 
+alphabetical order.
+```{r}
+library(forecast)
+```
+
+```{r}
+# Create a vector 
+
+string_vector <- c("eight","four","ten","two")
+
+# I create level from one up to ten in terms of quantity 
+
+string_level<-c("one","two", "three", "four", "five", "six", "seven", "eight", "nine", "ten") # I creat level from one upto ten
+
+# using factor and level create another variable 
+
+vec<-factor(string_vector, levels = string_level)
+
+#sort it according level
+sort(vec)
+
+```
+

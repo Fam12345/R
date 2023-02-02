@@ -1,0 +1,207 @@
+---
+title: "Class after Midterm_Exam"
+output: pdf_document
+date: "2022-10-14"
+author: "Fentaw Abitew"
+latex_engine: "xelatex"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+AMERICAN UNIVERSITY
+
+STAT 412/612
+
+#Midterm 1
+
+Be sure to provide all r code that produces the requested plots/output tibbles or data frames. 
+Use ggplot coding to produce graphs and plots as demonstrated in class.   Submit all results 
+in an Rmardown file and a word file or an Rmarkdown file and a pdf.
+
+
+```{r}
+library(tidyverse)     
+library(dplyr)      
+library(ggplot2) 
+```
+  
+```{r}
+midwest
+view(midwest)
+
+#V  =  pir2h
+# SA  =  2(pirh  +  pir2)
+```
+
+    For some of the problems, you have to determine what variables to use.Problems 1 – 10 are for undergraduate (412) and graduate (612) students.
+
+1. Using the midwest data frame produce a data table that shows output for the Ohio (OH) only.  Produce correct output by using two methods. First use the piping method and then use the assignment method.
+
+```{r}
+midwest %>% filter(midwest$state== "OH") ->oh_df # piping first then assignment 
+
+oh_df
+```
+
+2. Using the midwest data frame, produce a data table that shows white population that is greater than 50,000 but less than 90,000 for the state of Indiana (IN)
+
+```{r}
+indiana_whitepop_less90<-filter(midwest, state=="IN" & popwhite> 50000 & popwhite<90000)
+indiana_whitepop_less90
+ 
+```
+
+```{r}
+#We can filter the popwhite column only if needed; I also added the county  for fullness
+indiana_whitepop_less90%>%
+  select(popwhite, state, county)
+```
+
+
+3. Using the midwest data , produce a data frame (20 observations) that shows only the variables state, county, poptotal , popamerindian, percamerindian for the state of Indiana.  Also your data frame should show popamerindian in descending order.Which county in Indiana has the highest number of Native Americans?
+
+
+
+```{r}
+indian_data <- select(midwest,state,county,poptotal,percamerindan, popamerindian)%>%
+  filter(state=="IN") 
+
+arrange(indian_data, desc(popamerindian)) # Marion has the highest popamerindian(Native Americans)
+
+
+  
+```
+
+4. Using the midwest data and dplyr functions, create a data frame for only the state of Michigan (MI) showing those counties that have a known poverty population that is greater than 10,000 and a percentage of professionals that is greater than 10 percent. Only select variables that you need for the data frame, Your output should only have four variables and six (rows) / observations.
+
+```{r}
+filter(midwest, state== "MI", poppovertyknown > 10000 & percprof >10) %>%
+  select(state, county, poppovertyknown, percprof) ->michgan_poverty
+
+michgan_poverty
+```
+
+5. Using the midwest data and dplyr commands and functions, write r code that will show the mean of the poverty population for the counties of each state.
+
+```{r}
+midwest %>% 
+  group_by(county, state) %>% 
+  # Don't be alarmed here, I added state just to see the county and state together side by side and 
+  #since the question ask for the counties, I am NOT trying to group by using both variables. If I want that I could use groups_by in steady.
+  # and by default r summarise has grouped output by the first variable only.  
+  summarize(mean_poverty= mean(poppovertyknown, na.rm=TRUE)) ->poverty_groupedby_county
+poverty_groupedby_county 
+
+
+# Not asked to do, but kind of be curious and order to see the poorest county
+arrange(poverty_groupedby_county, desc(mean_poverty)) 
+
+
+```
+
+6. Using the midwest data, produce a scatter plot showing a relationship between the variables  poppovertyknown and poptotal (Let poptotal = x and poppovertyknown = y).
+
+```{r}
+ggplot(data=midwest, aes(x=poptotal, y=poppovertyknown)) +
+geom_point()
+```
+
+7. Using the midwest data, write r code that will produce the following side by side boxplots.
+
+```{r}
+ggplot(midwest, aes(x= state, y=percadultpoverty))+
+geom_boxplot()
+```
+
+8. Using the midwest data, write r code that will produce a facet plot that shows scatter plots (red data points) with respect to the levels for the variable state. Also add code that will generate regression lines through your scatter plots that feature x = percollege and y = percprof. Title your facet plot "College/Professional Work Scatter Plots"
+
+```{r}
+# Creating the scatter plot
+Red_scatterplot <-ggplot(data=midwest, aes(x=percollege, y=percprof))+
+
+  #Not asked but I added x and y lab 
+   xlab("Percentage of college") +
+   ylab("Percentage of Professional") +
+  ggtitle("College/Professional Work Scatter Plots")+
+  geom_point(color='red') +
+  geom_smooth(se = FALSE, method = lm) 
+
+# Facete wrap with respect to the levels for the variable state
+facetplot_scatterplot <-Red_scatterplot + facet_wrap(~ state)
+facetplot_scatterplot
+
+```
+
+9. Using the midwest data frame, create a bar graph that shows the different counts for each state in the data set. Your bars should have different colors.  Which state has the highest count?
+
+
+```{r}
+ggplot(data=midwest, aes(factor(state), fill = factor(state))) +
+ggtitle("State Bar graph")+ # Not asked to do
+geom_bar()
+
+# State of Illinois(IL) has the highest count.
+```
+
+10. The formula used to find the volume of a cylinder is V = pi times r squared and the formula to find the Surface Area of a cylinder is A = 2(pi times r times h + pi times r squared) Using the formal notation and process for writing a function, as demonstrated in class, to write a function that will calculate the Volume and the Surface Area of a given cylinder. Test your function by calculating answers for r = 5 and h = 10.
+
+
+```{r}
+cylinder_area = function(r,h)
+{ area=(2*(pi*r*h + pi * r^2))
+return(area)
+}
+
+cylinder_volume= function(r)
+{
+volume=pi*r^2
+return(volume)
+}
+
+```
+ 
+
+ 
+```{r}
+
+cylinder_area(5,10)
+cylinder_volume(5)
+
+
+```
+
+ 
+    Questions 11 and 12 are for graduate students (612) only
+
+11. A partial data frame to be generated from the midwest data frame is given below. Write r code and apply dplyr functions that will produce an additional 20 rows to the 5 rows shown.
+A tibble: 72 x 6
+   state     county   poptotal popadults Ratio Percent
+   <chr>     <chr>       <int>     <int> <dbl>   <dbl>
+ 1 Wisconsin ADAMS       15682     11378 0.726    72.6
+ 2 Wisconsin ASHLAND     16307     10262 0.629    62.9
+ 3 Wisconsin BARRON      40750     26198 0.643    64.3
+ 4 Wisconsin BAYFIELD    14008      9418 0.672    67.2
+ 5 Wisconsin BROWN      194594    120575 0.620    62.0
+ 
+```{r}
+midwest %>%
+  select(state, county, poptotal, popadults) %>%
+  filter(state=="WI") %>%
+  mutate(ratio = popadults/poptotal, 
+         percent = ratio *100) -> wi_data
+head(wi_data,25)
+```
+ 
+
+12. Use ggplot coding to produce the side by side plots shown below. (Hint: use the categorical variable state and the quantitative variable area of the midwest data table.
+
+```{r}
+ggplot(midwest, aes(x=area, y=state, fill = state))+
+  geom_violin() +
+  ggtitle("Violin Plots (area vs state")
+```
+
+

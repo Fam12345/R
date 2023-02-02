@@ -1,0 +1,60 @@
+---
+title: "Lab 1: Group GA"
+output: pdf_document
+date: "2022-09-02"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## HW_1
+Exercise 1: Sum up all even numbers from 10 to 1002 (look at the help page of sum() and seq())
+```{r}
+
+n<-seq(10, 1002, 2)
+n
+sum(n)
+
+```
+
+Exercise 2: Create a vector of strings where the elements are "Hello","world!", "How", "are", and "you?". Combine all of these words together into one string, separated by underscores (look at help page of paste())
+
+```{r}
+v<-c("Hello","world!", "How", "are", "you?")
+output<-paste(v, collapse = "_")
+output
+```
+Exercise 3:  What happend when you sum "1" with 2?
+```{r}
+#whathappned<-sum("1", 2) # two type of variable(charcter, double)
+#whathappned  
+#...Error in sum("1", 2) : invalid 'type' (character) of argument
+```
+
+
+Exercise 4: You can comment out code using hashtags # at the start of a line. That is, the code will no longer run.Comments are great to make code more readable. Comment out the code in the previous chunk and rerun.
+```{r}
+#whathappned<-sum("1", 2) # two type of variable(charcter, double)
+#whathappned  
+```
+Exercise 5: If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23. Find the sum of all the multiples of 3 or 5 below 1000.
+
+```{r}
+answer=0
+for (i in 1:999) {
+    if (i%%3 == 0 | i%%5 == 0) 
+        answer <- answer + i}
+answer
+```
+Exercise 6: (Extra Credit)What is the sum of all integers that are either (divisible by 4 and less than 700) or (divisible by 3 and between
+500 and 1000)?
+
+```{r}
+answer=0
+for (i in 1:1000) {
+    if  ((i%%4 == 0 & i < 700) |(i%%3==0 & i > 500 & i< 1000))
+        answer <- answer + i}
+answer
+```
+

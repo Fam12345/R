@@ -1,0 +1,63 @@
+---
+title: "HW_7"
+author: "GA"
+date: "2022-10-31"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1
+
+ Extract all matches from the England Premier League and calculate the mean team difference
+(average of home team goals minus away team goals) each day in the "2010/2011" season. Plot this
+proportion against time. (hint: you’ll need separate date and time. You’ll also need to use before you plot
+parse_date()).
+
+```{r}
+library(tidyverse)
+library(RSQLite)
+```
+
+
+```{r}
+
+```
+
+```{r}
+con <- dbConnect(drv = SQLite(), dbname = "/Users/fam/Desktop/Desktop - FENTAW’s MacBook Air/American_U/R_programming/soccer.sqlite")
+
+```
+
+```{r}
+dbListTables(con)
+```
+
+```{r}
+ Match_db   <- tbl(con, "Match")
+```
+
+```{r}
+Match_db %>%
+  select(league_id, season, date, home_team_goal, away_team_goal) %>%
+  filter(league_id == 1729, season == "2010/2011") %>%
+  collect() ->
+      subMatch
+    
+    subMatch %>%
+      separate(col = "date", into = c("date", "time"), sep = " ") %>%
+      select(-time) %>%
+      group_by(date) %>%
+      summarize(mean_diff = mean(home_team_goal - away_team_goal)) %>%
+      mutate(date = parse_date(x = date, format = "%Y-%m-%d")) ->
+      ave_diff
+    
+    ggplot(data = ave_diff, mapping = aes(x = date, y = mean_diff)) +
+      geom_line() +
+      xlab("Date") +
+      ylab("Mean Difference") +
+      theme_bw()
+```
+
